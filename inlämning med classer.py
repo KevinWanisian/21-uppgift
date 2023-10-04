@@ -8,11 +8,11 @@ RESET = "\033[0m"
 
 
 # Variabler
-class variabel:
-    SpelarVal = True
-    dealer_in = True
-    Spelarhand = []
-    Datorhand = []
+
+SpelarVal = True
+dealer_in = True
+Spelarhand = []
+Datorhand = []
 
 
 ui = 15
@@ -69,7 +69,7 @@ class kortlek:
 
 # Funktion för att dela ut kort
 
-def Deal(turn):
+def deal(turn):
     # Random kort
     random_suit = random.choice(list(kortlek.Deck.keys()))  # Väljer ett slumpmässigt mönster t.ex "Hjärter", "Ruter"
     available_cards = kortlek.Deck[random_suit]  # Kollar efter tillgängliga kort i det valda mönstret
@@ -85,29 +85,29 @@ print(".: TJUGOETT :.")
 print("*" * ui)
 
 # Ger ett kort efter man har tryckt in "Enter"
-Deal(variabel.Spelarhand)
+deal(Spelarhand)
 input("Tryck Enter för att börja...")
 
 # Spelarens väljer att stanna eller ta fler kort
-while variabel.SpelarVal:
+while SpelarVal:
     print("-" * ui)
     print(BLUE + "Du drog:")
-    for card in variabel.Spelarhand:
+    for card in Spelarhand:
         print(card)
-    print(BLUE + (f"Totalpoäng: {kortlek.CardValue(variabel.Spelarhand)}"))
+    print(BLUE + f"Totalpoäng: {kortlek.CardValue(Spelarhand)}")
 
-    if kortlek.CardValue(variabel.Spelarhand) > 21:
+    if kortlek.CardValue(Spelarhand) > 21:
         break
 
-    if variabel.SpelarVal:
+    if SpelarVal:
         print(RESET + "-" * ui)
         hit_or_stay = input(RESET + "Vill du: 1 = Ta kort  2 = Stanna> ")
 
         if hit_or_stay == "1":
-            Deal(variabel.Spelarhand)
+            deal(Spelarhand)
         elif hit_or_stay == "2":
             print("Du väljer att stanna på: ")
-            for card in variabel.Spelarhand:
+            for card in Spelarhand:
                 print(BLUE + card)
             print(RESET + "-" * ui)
             break
@@ -117,26 +117,26 @@ while variabel.SpelarVal:
 
 
 # Dealerns/Datorn tur att spela
-while variabel.dealer_in:
-    if not variabel.Datorhand:
-        Deal(variabel.Datorhand)
+while dealer_in:
+    if not Datorhand:
+        deal(Datorhand)
         continue
-    elif kortlek.CardValue(variabel.Datorhand) > 16:
-        variabel.dealer_in = False
+    elif kortlek.CardValue(Datorhand) > 16:
+        dealer_in = False
         print(RED + "Dealern drog: ")
-        for card in variabel.Datorhand:
+        for card in Datorhand:
             print(card)
-        print(RED + f"Totalpoäng: {kortlek.CardValue(variabel.Datorhand)}")
+        print(RED + f"Totalpoäng: {kortlek.CardValue(Datorhand)}")
 
-    elif variabel.dealer_in:
-        Deal(variabel.Datorhand)
+    elif dealer_in:
+        deal(Datorhand)
 
-    elif kortlek.CardValue(variabel.Datorhand) > 21:
+    elif kortlek.CardValue(Datorhand) > 21:
         break
 
 # Räknar poängen för Spelaren och Dealern/Datorn
-Spelaren = kortlek.CardValue(variabel.Spelarhand)
-Datorn = kortlek.CardValue(variabel.Datorhand)
+Spelaren = kortlek.CardValue(Spelarhand)
+Datorn = kortlek.CardValue(Datorhand)
 
 # Skriver ut resultatet
 if Datorn and Spelaren > 21:
