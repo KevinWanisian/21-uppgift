@@ -14,13 +14,14 @@ Spelarhand = []  # Lista för spelarens kort
 Datorhand = []  # Lista för dealerns kort
 ui = 15  # Bredden på gränssnittet
 
-# Definiera en dictionary för kortleken
+# Dictionary för kortleken
 Deck = {
     "Hjärter": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
     "Ruter": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
     "Spader": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
     "Klöver": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
 }
+
 
 # Funktion för att beräkna kortvärden
 def CardValue(turn):
@@ -44,6 +45,7 @@ def CardValue(turn):
 
     return total
 
+
 # Funktion för att dela ut kort
 def deal(turn):
     slumpa_mönster = random.choice(list(Deck.keys()))
@@ -53,6 +55,7 @@ def deal(turn):
         card = random.choice(available_cards)
         turn.append(card)
         available_cards.remove(card)
+
 
 # Användargränssnitt
 print(".: TJUGOETT :.")
