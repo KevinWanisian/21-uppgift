@@ -1,101 +1,74 @@
+# Importera random-modulen för att använda slumpmässiga funktioner
 import random
 
-# Detta ändrar textens färg i terminalen
+# Definiera färgkoder för text i terminalen
 RED = "\033[31m"
 GREEN = "\033[32m"
 BLUE = "\033[34m"
 RESET = "\033[0m"
 
-# Variabler
+# Initialisera variabler
+SpelarVal = True  # Variabel för spelarens val
+dealer_in = True  # Variabel för att hålla koll på dealerns tur
+Spelarhand = []  # Lista för spelarens kort
+Datorhand = []  # Lista för dealerns kort
+ui = 15  # Bredden på gränssnittet
 
-SpelarVal = True
-dealer_in = True
-Spelarhand = []
-Datorhand = []
+# Definiera en dictionary för kortleken
+Deck = {
+    "Hjärter": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
+    "Ruter": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
+    "Spader": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
+    "Klöver": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
+}
 
+# Funktion för att beräkna kortvärden
+def CardValue(turn):
+    card_values = {"Kung": 13, "Dam": 12, "Knäckt": 11, "Ess": 14}
+    total = 0
+    ess_räknare = 0
 
-ui = 15
+    for kort in turn:
+        card_value = card_values.get(kort, None)
+        if card_value is not None:
+            total += card_value
+        else:
+            total += int(kort)
 
+        if kort == "Ess":
+            ess_räknare += 1
 
-# Kortlek med olika värden och färger
-class kortlek:
-    Deck = {
-        "Hjärter": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
-        "Ruter": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
-        "Spader": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
-        "Klöver": ["Ess", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Knäckt", "Dam", "Kung"],
-    }
+    while total > 21 and ess_räknare > 0:
+        total -= 13
+        ess_räknare -= 1
 
-    # Funktion för att beräkna poäng
-    def CardValue(turn):
-        # En dictionary som innehåller värden för "speciella" kort (inte kort med siffror)
-        card_values = {
-            "Kung": 13,
-            "Dam": 12,
-            "Knäckt": 11,
-            "Ess": 14
-        }
-
-        # Variabel för START-poängen
-        total = 0
-
-        # Räknar antalet Ess i handen
-        ess_räknare = 0
-
-        # En For Loop för att gå igenom varje kort i spelarens eller datorns hand
-        for kort in turn:
-            card_value = card_values.get(kort, None)  # Hämtar värdet för det aktuella kortet från dictionaryn (kortlek.Deck)
-
-            # Om kortet finns i dictionaryn, lägg till dess värde till den totala poängen
-            if card_value is not None:
-                total += card_value
-            else:
-                # Om kortet inte finns i dictionaryn, skapar ett numeriska värde till respektive kort (Kung, Dam, Knäckt)
-                total += int(kort)
-
-            # Om kortet är ett ess, öka räknaren
-            if kort == "Ess":
-                ess_räknare += 1
-
-        # Om totala poängen överstiger 21 och det finns ess i handen, sänk essens värde från 14 till 1
-        while total > 21 and ess_räknare > 0:
-            total -= 13
-            ess_räknare -= 1
-
-        # Returnernar den totala poängen
-        return total
-
+    return total
 
 # Funktion för att dela ut kort
-
 def deal(turn):
-    # Random kort
-    random_suit = random.choice(list(kortlek.Deck.keys()))  # Väljer ett slumpmässigt mönster t.ex "Hjärter", "Ruter"
-    available_cards = kortlek.Deck[random_suit]  # Kollar efter tillgängliga kort i det valda mönstret
+    slumpa_mönster = random.choice(list(Deck.keys()))
+    available_cards = Deck[slumpa_mönster]
 
     if available_cards:
-        card = random.choice(available_cards)  # Slumpa ett kort från den valda sviten
-        turn.append(card)  # Lägger till det slumpade kortet i spelarens eller dealerns hand
-        available_cards.remove(card)  # Ta bort kortet som blev slumpat från kortlek.Deck listan
+        card = random.choice(available_cards)
+        turn.append(card)
+        available_cards.remove(card)
 
-
-# Användargränssnitt/ui
+# Användargränssnitt
 print(".: TJUGOETT :.")
 print("*" * ui)
-
-# Ger ett kort efter man har tryckt in "Enter"
 deal(Spelarhand)
 input("Tryck Enter för att börja...")
 
-# Spelarens väljer att stanna eller ta fler kort
+# Spelarens val att ta kort eller stanna
 while SpelarVal:
     print("-" * ui)
     print(BLUE + "Du drog:")
     for card in Spelarhand:
         print(card)
-    print(BLUE + f"Totalpoäng: {kortlek.CardValue(Spelarhand)}")
+    print(BLUE + f"Totalpoäng: {CardValue(Spelarhand)}")
 
-    if kortlek.CardValue(Spelarhand) > 21:
+    if CardValue(Spelarhand) > 21:
         break
 
     if SpelarVal:
@@ -114,30 +87,29 @@ while SpelarVal:
             input("Fel. Välj antingen 1 eller 2")
             continue
 
-
-# Dealerns/Datorn tur att spela
+# Dealerns tur att spela
 while dealer_in:
     if not Datorhand:
         deal(Datorhand)
         continue
-    elif kortlek.CardValue(Datorhand) > 16:
+    elif CardValue(Datorhand) > 16:
         dealer_in = False
         print(RED + "Dealern drog: ")
         for card in Datorhand:
             print(card)
-        print(RED + f"Totalpoäng: {kortlek.CardValue(Datorhand)}")
+        print(RED + f"Totalpoäng: {CardValue(Datorhand)}")
 
     elif dealer_in:
         deal(Datorhand)
 
-    elif kortlek.CardValue(Datorhand) > 21:
+    elif CardValue(Datorhand) > 21:
         break
 
-# Räknar poängen för Spelaren och Dealern/Datorn
-Spelaren = kortlek.CardValue(Spelarhand)
-Datorn = kortlek.CardValue(Datorhand)
+# Beräkna spelarens och dealerns poäng
+Spelaren = CardValue(Spelarhand)
+Datorn = CardValue(Datorhand)
 
-# Skriver ut resultatet
+# Skriv ut resultatet
 if Datorn and Spelaren > 21:
     print("Spelaren och Dealern gick över 21! Dealern vinner.")
 elif Datorn == Spelaren:
